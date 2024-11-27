@@ -1,7 +1,7 @@
 library(maftools)
 
 # Diretório base
-base_dir <- "db_UCEC"
+base_dir <- "db_UCS/mutation_UCS/"
 
 # Listar todos os arquivos .maf (ignorando arquivos com .parcel)
 maf_files <- list.files(
