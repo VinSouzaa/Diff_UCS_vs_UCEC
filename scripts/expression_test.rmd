@@ -24,7 +24,7 @@ library(ggplot2)
 
 ```{r setup, include=FALSE}
 count <- read.delim("G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\2b516199-a3d6-4a0e-924f-ffd89e6e2204.rna_seq.augmented_star_gene_counts.tsv", header = FALSE, sep = "\t")
-clinical <- read.delim("G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\nationwidechildrens.org_clinical_patient_ucs.txt", header = TRUE)
+clinical <- read.delim("G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\nationwidechildrens.org_clinical_patient_ucec.txtt_ucs.txt", header = TRUE)
 head(count)
 colnames(count) <- as.character(count[2,])
 rownames(count) <- as.character(count[,1])
