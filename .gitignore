@@ -1,3 +1,4 @@
 # Ignorar todos os arquivos com a extensão .gsheet
 *.gsheet
 *.maf.gz
+*.tsv
