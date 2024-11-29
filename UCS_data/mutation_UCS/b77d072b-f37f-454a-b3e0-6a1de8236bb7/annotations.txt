@@ -1,2 +1,0 @@
-id	submitter_id	entity_type	entity_id	category	classification	created_datetime	status	notes
-1280937e-22ed-439b-b836-0e65a4b81ce9	\N	masked_somatic_mutation	b77d072b-f37f-454a-b3e0-6a1de8236bb7	General	Notification	2022-02-28T12:16:35.263798-06:00	Approved	Variants from SomaticSniper are not included.
