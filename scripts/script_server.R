@@ -1,4 +1,4 @@
-#scp -P 2223 G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\trabalho\\script_server rib0109_g3@200.144.244.198:home\\rib0109_g3
+#scp -P 2223 rib0109_g3@200.144.244.198:home\\rib0109_g3\\db_UCS\\Rplots.pdf "C:\Users\cicer\Downloads"
 
 library(maftools)
 library(dplyr)

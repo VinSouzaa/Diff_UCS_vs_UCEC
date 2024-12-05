@@ -1,0 +1,69 @@
+---
+title: "expression_test"
+author: "VinSouzaa"
+date: "2024-11-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("DESeq2")
+
+```
+
+```{bash}
+ls
+```
+
+```{r setup, include=FALSE}
+library(DESeq2)
+library(ggplot2)
+```
+
+```{r setup, include=FALSE}
+count <- read.delim("G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\2b516199-a3d6-4a0e-924f-ffd89e6e2204.rna_seq.augmented_star_gene_counts.tsv", header = FALSE, sep = "\t")
+clinical <- read.delim("G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\nationwidechildrens.org_clinical_patient_ucec.txtt_ucs.txt", header = TRUE)
+head(count)
+colnames(count) <- as.character(count[2,])
+rownames(count) <- as.character(count[,1])
+count <- count[-c(1, 2, 3, 4, 5, 6), -c(1, 2, 3, 5, 6, 7, 8, 9), drop = FALSE]
+clinical <- clinical[-c(1,2),]
+
+count
+
+```
+
+
+```{r}
+DESeqDataSet(count)
+```
+
+
+
+```{r}
+description <- factor(c("ID", "Nome", "Função", "Total_reads", "reads_forward", "reads_reverse", "tpm_unstrated", "fpkpm_unstranded", "fpkm_uq_unstranded"))
+cond
+```
+
+```{r}
+coldata <- data.frame(col.names = colnames(count), description)
+coldata
+rm(coldata)
+```
+
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = count, DataFrame(description), ~description )
+```
+
+#design é ucs vs ucec 
+#mutação silenciosa pode tirar dos dados, filtrar missense, nonsense
+
+```{r}
+countData <- matrix(1:100,ncol=4)
+condition <- factor(c("A","A","B","B"))
+dds <- DESeqDataSetFromMatrix(countData, DataFrame(condition), ~ condition)
+dds
+```
+
