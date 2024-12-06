@@ -1,38 +1,40 @@
 #scp -P 2223 rib0109_g3@200.144.244.198:home\\rib0109_g3\\db_UCS\\Rplots.pdf "C:\Users\cicer\Downloads"
 
+#script para estudar e testar a lógica que será aplicada para fazer o merge_mafs no servidor
+
 library(maftools)
 library(dplyr)
 
-# Diretório base
-base_dir <- "G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\mutation_UCS"
+#diretório base
+base_dir <- "\\inserir\\caminho\\diretório"
 
-# Listar todos os arquivos .maf (ignorando arquivos com .parcel)
+#listar todos os arquivos .maf (ignorando arquivos com .parcel)
 maf_files <- list.files(
   base_dir, 
-  pattern = "\\.maf(\\.gz)?$", # Inclui .maf e .maf.gz, mas exclui .parcel
+  pattern = "\\.maf(\\.gz)?$",
   recursive = TRUE, 
   full.names = TRUE
 )
 
-# Filtrar para garantir que não contenham '.parcel'
+#filtrar para garantir que não contenham '.parcel'
 maf_files <- maf_files[!grepl("\\.parcel$", maf_files)]
 
 
-# Lista de arquivos principais encontrados
+#lista de arquivos principais encontrados
 print(maf_files)
 
-# Carregar cada arquivo .maf em uma lista
+#carregar cada arquivo .maf em uma lista
 maf_list <- lapply(maf_files, function(file) {
   read.maf(maf = file)
 })
 
-# Mesclar todos os MAFs em um único objeto
+#mesclar todos os MAFs em um único objeto
 merged_maf <- merge_mafs(maf_list)
 
-# Exibir o resumo do MAF combinado
+#exibir o resumo do MAF combinado
 print(merged_maf)
 
-# Visualizar o resumo do MAF mesclado
+#visualizar o resumo do MAF mesclado
 plotmafSummary(maf = merged_maf)
 
 
@@ -42,12 +44,12 @@ cat("Genes repetidos:", paste(genes_Repetidos, collapse = ","), "\n")
 print(freq)
 
 
-# Agrupar por gene e somar
+#agrupar por gene e somar
 teste <- merged_maf@data %>%
   group_by(Hugo_Symbol) %>%
   summarise(across(where(is.numeric), sum, na.rm = TRUE))
 
-# Exibir o resultado
+#exibir o resultado
 head(teste)
 table(teste$Hugo_Symbol)
 

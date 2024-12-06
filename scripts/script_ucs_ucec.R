@@ -1,6 +1,8 @@
-dados <- read.table("C:\\Users\\cicer\\Downloads\\nationwidechildrens.org_clinical_patient_ucs.txt", header = TRUE, sep = "\t")
-maf_UCS <- read.maf(maf = "C:\\Users\\cicer\\Downloads\\a3a40aae-6b8e-4bf5-9fe1-4055f207a38a.wxs.aliquot_ensemble_masked.maf")
-maf_UCEC <- read.maf(maf = "C:\\Users\\cicer\\Downloads\\d7433af4-2fd5-4a8e-84af-a1c86a73f4c6.wxs.aliquot_ensemble_masked.maf")
+#aqruivo teste para manipulação de dados de mutação, comandos de plotagens interessantes
+
+dados <- read.table("\\inserir\\caminho\\arquivo", header = TRUE, sep = "\t")
+maf_UCS <- read.maf(maf = "\\inserir\\caminho\\arquivo")
+maf_UCEC <- read.maf(maf = "\\inserir\\caminho\\arquivo")
 
 head(dados)
 summary(dados)
@@ -41,12 +43,14 @@ getFields(maf_UCS) #all fields on .maf
 
 comp <- merge_mafs(mafs = c(maf_UCS, maf_UCEC)) #fusão de dois arquivos .maf
 
+#plotagens estatisticas 
 plotmafSummary(maf = maf_UCS, rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE)
 plotmafSummary(maf = maf_UCEC, rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE)
 
 mafbarplot(maf_UCS)
 mafbarplot(maf_UCEC)
 
+#plotagens dos 10 genes mais mutados
 oncoplot(maf_UCS, 10)
 oncoplot(maf_UCEC, 10)
 
@@ -55,7 +59,7 @@ lollipopPlot(maf_UCEC, gene ='TP53', AACol = 'HGVSp_Short', showMutationRate = T
 
 plotProtein('TP53')
 
-rainfallPlot(maf_UCS) #distancia entre as mutações, algo assim
+rainfallPlot(maf_UCS) #distancia entre as mutações
 
 tcgaCompare(maf_UCEC)
 

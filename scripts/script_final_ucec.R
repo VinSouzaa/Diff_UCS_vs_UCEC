@@ -18,19 +18,19 @@ library(dplyr)
 
 #-----------------------------------------------------------------------------------------------------
 #arquivos de expressão
-rnaseq.dirs <- list.files('C:\\Users\\cicer\\Downloads\\expression_UCEC') #define o diretório onde se encontram os dados que utilizaremos
+rnaseq.dirs <- list.files('\\inserir\\caminho\\diretório\\expression_UCEC') #define o diretório onde se encontram os dados que utilizaremos
 print(rnaseq.dirs) #imprime na tela todos os arquivos encontrados no diretório
 
 rnaseq.dirs[1] #apenas imprime o primeiro elemento da lista
 
-raw_counts <- read.delim(paste0('C:\\Users\\cicer\\Downloads\\expression_UCEC\\', rnaseq.dirs[1], '\\', list.files(paste0('C:\\Users\\cicer\\Downloads\\expression_UCEC\\', rnaseq.dirs[1]), pattern = '.tsv')), skip = 1)[-c(1:4), ] #vai ler o primeiro arquivo .tsv do diretório e montar um dataset eliminando as linhas 1 a 4, então teremos um arquivo com os dados de contagem de reads de cada gene do primeiro caso
+raw_counts <- read.delim(paste0('\\inserir\\caminho\\diretório\\expression_UCEC\\', rnaseq.dirs[1], '\\', list.files(paste0('\\inserir\\caminho\\diretório\\expression_UCEC\\', rnaseq.dirs[1]), pattern = '.tsv')), skip = 1)[-c(1:4), ] #vai ler o primeiro arquivo .tsv do diretório e montar um dataset eliminando as linhas 1 a 4, então teremos um arquivo com os dados de contagem de reads de cada gene do primeiro caso
 raw_counts <- raw_counts[, c(1,4)] #pegamos apenas as colunas 1 (ID do gene) e 4 (nmro de reads unstranded)
 head(raw_counts) #mostra os itens iniciais do dataset
 colnames(raw_counts)[2] <- rnaseq.dirs[1] #nomeia a coluna do nmro de reads com o nome do arquivo de onde vem a contagem
 
 c = 3 #inicias-se em 3 pq já temos 2 colunas
 for (i in rnaseq.dirs[-1]) { #para cada arquivo listado no diretório, menos o primeiro que já foi utilizado
-  tmp <- read.delim(paste0('C:\\Users\\cicer\\Downloads\\expression_UCEC\\',  i, '/', list.files(paste0('C:\\Users\\cicer\\Downloads\\expression_UCEC\\', i), pattern = '.tsv')), skip = 1)[-c(1:4), ] #seleciona o arquivo i em cada etapa de iteração para ser lido e armazena em um temp
+  tmp <- read.delim(paste0('\\inserir\\caminho\\diretório\\expression_UCEC\\',  i, '/', list.files(paste0('\\inserir\\caminho\\diretório\\expression_UCEC\\', i), pattern = '.tsv')), skip = 1)[-c(1:4), ] #seleciona o arquivo i em cada etapa de iteração para ser lido e armazena em um temp
   tmp <- tmp[, 4] #extração dos dados da qtde de reads do arquivo i
   raw_counts <- cbind(raw_counts, tmp) #combina o dataset raw_counts com a qtde de reads do arquivo i
   colnames(raw_counts)[c] <- i #nomeia a nova coluna inserida pelo nome do arquivo do diretório
@@ -52,22 +52,22 @@ class(raw_counts)
 is.numeric(raw_counts)
 raw_counts[1:4, 1:4]
 
-saveRDS(raw_counts, file = 'G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\UCEC_data\\final_data\\TCGA_UCEC_RNASEQ.rds')
+saveRDS(raw_counts, file = '\\inserir\\caminho\\diretório\\TCGA_UCEC_RNASEQ.rds')
 
 #---------------------------------------------------------------------------------------------------------------
 #arquivos de mutação
-maf.dirs <- list.files('C:\\Users\\cicer\\Downloads\\mutation_UCEC\\') #lista todos os arquivos do diretório de mutação UCEC e salva os nomes na variável maf.dirs
+maf.dirs <- list.files('\\inserir\\caminho\\diretório\\mutation_UCEC\\') #lista todos os arquivos do diretório de mutação UCEC e salva os nomes na variável maf.dirs
 print(maf.dirs)
 
 
-maf <- read.delim(paste0('C:\\Users\\cicer\\Downloads\\mutation_UCEC\\',  maf.dirs[1], '/', list.files(paste0('C:\\Users\\cicer\\Downloads\\mutation_UCEC\\', maf.dirs[1]), pattern = 'maf.gz')), skip = 7) #leitura do primeiro arquivo da lista
+maf <- read.delim(paste0('\\inserir\\caminho\\diretório\\mutation_UCEC\\',  maf.dirs[1], '/', list.files(paste0('\\inserir\\caminho\\diretório\\mutation_UCEC\\', maf.dirs[1]), pattern = 'maf.gz')), skip = 7) #leitura do primeiro arquivo da lista
 head(maf)
 colnames(maf) #lista o nome de todas as colunas disponiveis no arquivo de mutação
 maf <- maf[, c(1,9,16)] #escolhemos analisar as colunas com o Hugo_symbol, classificação da mutação e o Barcode do tumor
 head(maf)
 
 for (i in maf.dirs[-1]) {
-  tmp <- read.delim(paste0('C:\\Users\\cicer\\Downloads\\mutation_UCEC\\',  i, '/', list.files(paste0('C:\\Users\\cicer\\Downloads\\mutation_UCEC\\', i), pattern = 'maf.gz')), skip = 7)
+  tmp <- read.delim(paste0('\\inserir\\caminho\\diretório\\mutation_UCEC\\',  i, '/', list.files(paste0('\\inserir\\caminho\\diretório\\mutation_UCEC\\', i), pattern = 'maf.gz')), skip = 7)
   tmp <- tmp[, c(1,9,16)]
   maf <- rbind(maf, tmp) #o rbind é para combinar os valores nas linhas, então terá apenas 3 colunas com várias linhas de acordo com cada arquivo
   print(i)
@@ -86,17 +86,17 @@ table(maf$Tumor_Sample_Barcode, maf$Hugo_Symbol) #resulta na qtde de combinaçõ
 
 muts <- c('Frame_Shift_Del', 'Frame_Shift_Ins', 'Missense_Mutation', 'Nonsense_Mutation')
 
-saveRDS(maf, file = 'G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\UCEC_data\\final_data\\TCGA_UCEC_MAF.rds') #salva o dataset .maf resultante 
+saveRDS(maf, file = '\\inserir\\caminho\\diretório\\TCGA_UCEC_MAF.rds') #salva o dataset .maf resultante 
 
 maf <- maf[which(maf$Variant_Classification %in% muts), ] #vai filtrar o dataset de maf e deixar apenas os casos em que a mutação está presente no vetor muts
 table(maf$Variant_Classification) #retorna a frquencia das mutações filtradas
 
-saveRDS(maf, file = 'G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\UCEC_data\\final_data\\TCGA_UCEC_MAF_filtered.rds')
+saveRDS(maf, file = '\\inserir\\caminho\\diretório\\TCGA_UCEC_MAF_filtered.rds')
 raw_counts[1:4,1:4]
 head(maf)
 
 #integrando os dados de mutação e expressão
-manifest <- read.delim("C:\\Users\\cicer\\Downloads\\gdc_manifest.2024-11-20_ucec_expression.txt.map2submitterID") #para o arquivo .map2submitterID foi utiliado o código em python, ele serve para coletar os IDs de cada caso que temos, esse dado será utilizado para correlacionar dados de mutação e expressão
+manifest <- read.delim("\\inserir\\caminho\\diretório\\gdc_manifest.2024-11-20_ucec_expression.txt.map2submitterID") #para o arquivo .map2submitterID foi utiliado o código em python, ele serve para coletar os IDs de cada caso que temos, esse dado será utilizado para correlacionar dados de mutação e expressão
 head(manifest)
 manifest$cases.0.samples.0.submitter_id[which(manifest$id == '308306fa-302f-4841-b45c-d37f718fd14a')] #apenas retorna o ID do caso em que o ID do manifesto for igual ao texto selecionado -> TCGA-B5-A3FA-01A
 
@@ -140,14 +140,14 @@ all(rownames(maf_table) == colnames(raw_counts))
 maf_table[maf_table > 1] <- 1 #tornando a matriz binária, agora temos a informação de quais genes apresentam ou não mutação
 
 
-saveRDS(raw_counts, file = 'G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\UCEC_data\\final_data\\TCGA_UCEC_RNASEQ_MATCHED.rds')
-saveRDS(maf_table, file = 'G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\UCEC_data\\final_data\\TCGA_UCS_MAF_MATCHED.rds')
+saveRDS(raw_counts, file = '\\inserir\\caminho\\diretório\\TCGA_UCEC_RNASEQ_MATCHED.rds')
+saveRDS(maf_table, file = '\\inserir\\caminho\\diretório\\TCGA_UCS_MAF_MATCHED.rds')
 
 #análise de expressão diferencial
-setwd('G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\UCEC_data\\final_data')
+setwd('\\inserir\\caminho\\diretório')
 
-raw_counts <- readRDS('G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\UCEC_data\\final_data\\TCGA_UCEC_RNASEQ_MATCHED.rds')
-maf <- readRDS('G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\UCEC_data\\final_data\\TCGA_UCEC_MAF_MATCHED.rds')
+raw_counts <- readRDS('\\inserir\\caminho\\diretório\\TCGA_UCEC_RNASEQ_MATCHED.rds')
+maf <- readRDS('\\inserir\\caminho\\diretório\\TCGA_UCEC_MAF_MATCHED.rds')
 
 maf <- as.data.frame(maf)
 table(maf$SYNE1)
@@ -178,10 +178,10 @@ boxplot(log(assay(dds)['ENSG00000136750.13', ]+1) ~ maf$TTN) #cria o boxplot par
 
 top_de
 
-rnaseq.dirs <- list.files('C:\\Users\\cicer\\Downloads\\expression_UCEC')[1]
+rnaseq.dirs <- list.files('\\inserir\\caminho\\diretório\\expression_UCEC')[1]
 rnaseq.dirs
 
-annot <- read.delim(paste0('C:\\Users\\cicer\\Downloads\\expression_UCEC\\',  rnaseq.dirs[1], '\\', list.files(paste0('C:\\Users\\cicer\\Downloads\\expression_UCEC\\', rnaseq.dirs[1]), pattern = '.tsv')), skip = 1)[-c(1:4), ]
+annot <- read.delim(paste0('\\inserir\\caminho\\diretório\\expression_UCEC\\',  rnaseq.dirs[1], '\\', list.files(paste0('\\inserir\\caminho\\diretório\\expression_UCEC\\', rnaseq.dirs[1]), pattern = '.tsv')), skip = 1)[-c(1:4), ]
 annot <- annot[, c(1,2)]
 head(annot)
 
@@ -192,8 +192,8 @@ head(top_de)
 top_de <- top_de[order(abs(top_de$log2FoldChange), decreasing = TRUE),]
 head(top_de)
 
-saveRDS(top_de, file = 'G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\UCEC_data\\final_data\\DE_TTN_mut_vs_wt.rds')
+saveRDS(top_de, file = '\\inserir\\caminho\\diretório\\DE_TTN_mut_vs_wt.rds')
 
-png('G:\\Meu Drive\\IBM-T21\\4º SEMESTRE\\FUNDAMENTOS EM BIOINFO\\Diff_UCS_vs_UCEC\\UCEC_data\\final_data\\TTN.png')
+png('\\inserir\\caminho\\diretório\\TTN.png')
 boxplot(log(assay(dds)['ENSG00000111049.4', ]+1) ~ maf$TTN, ylab = 'log(MYF5)', xlab = 'TTN mut')
 dev.off()
