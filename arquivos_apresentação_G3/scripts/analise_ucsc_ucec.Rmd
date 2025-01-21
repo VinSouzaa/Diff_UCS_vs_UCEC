@@ -1,0 +1,118 @@
+---
+title: "analise_ucsc_ucec.Rmd"
+output: html_document
+date: "2024-11-22"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+---
+title: "Análise UCS e UCEC com maftools"
+author: "VinSouzaa"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(maftools)
+
+#dados clínicos
+dados <- read.table("\\inserir\\caminho\\arquivo", 
+                    header = TRUE, sep = "\t")
+
+#arquivos MAF- testando em baixa escala, inicialmente
+maf_UCS <- read.maf(maf = "\\inserir\\caminho\\arquivo")
+maf_UCEC <- read.maf(maf = "\\inserir\\caminho\\arquivo")
+```
+
+```{r setup, include=FALSE}
+head(dados)
+summary(dados)
+
+#listando os identificadores dos pacientes
+list(dados$bcr_patient_uuid)
+```
+
+```{r setup, include=FALSE}
+#resumo de genes mutados no UCS
+summary_UCS <- getGeneSummary(maf_UCS)
+head(summary_UCS)
+tail(summary_UCS)
+
+#resumo de genes mutados no UCEC
+summary_UCEC <- getGeneSummary(maf_UCEC)
+head(summary_UCEC)
+
+#tabelas adicionais
+summary_UCS
+summary_UCEC
+
+#frequência de amostras mutadas, bom para dados quantitativos
+table(summary_UCEC$MutatedSamples)
+
+#dados clínicos do UCEC, estrtutura para acessar parâmetros dentro de outros parâmetros
+maf_UCEC@clinical.data$Tumor_Sample_Barcode
+```
+
+```{r setup, include=FALSE}
+getSampleSummary(maf_UCS)
+getGeneSummary(maf_UCS)
+getClinicalData(maf_UCS)
+getFields(maf_UCS) #todos os campos disponíveis no MAF
+```
+
+```{r setup, include=FALSE}
+#fusão de UCS e UCEC
+comp <- merge_mafs(mafs = c(maf_UCS, maf_UCEC))
+
+#resumo visual das cohortes
+plotmafSummary(maf = maf_UCS, rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE)
+plotmafSummary(maf = maf_UCEC, rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE)
+```
+
+```{r setup, include=FALSE}
+#gráficos de barras
+mafbarplot(maf_UCS)
+mafbarplot(maf_UCEC)
+
+#oncoplots
+oncoplot(maf_UCS, top = 10)
+oncoplot(maf_UCEC, top = 10)
+
+#lollipop plots
+lollipopPlot(maf_UCS, gene = 'TP53', AACol = 'HGVSp_Short', showMutationRate = TRUE)
+lollipopPlot(maf_UCEC, gene = 'TP53', AACol = 'HGVSp_Short', showMutationRate = TRUE)
+
+#proteínas
+plotProtein('TP53')
+
+#rainfall plot
+rainfallPlot(maf_UCS)
+```
+
+```{r setup, include=FALSE}
+#comparação com TCGA
+tcgaCompare(maf_UCEC)
+
+#frequência de alelos variantes
+plotVaf(maf_UCS)
+
+#interações somáticas
+somaticInteractions(comp, top = 25, pvalue = c(0.05, 0.1))
+
+#sobrevida
+mafSurvival(maf_UCS, gene = 'TP53', time = 'days_to_last_followup', Status = 'Overall_Survival_Status', isTCGA = TRUE)
+
+#comparação de cohorts
+mafCompare(maf_UCEC, maf_UCEC, minMut = 5)
+forestPlot(comp, pVal = 0.1)
+```
+
+
+
