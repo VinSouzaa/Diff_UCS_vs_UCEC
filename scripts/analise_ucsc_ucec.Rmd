@@ -22,41 +22,41 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(maftools)
 
-#dados clínicos
-dados <- read.table("\\inserir\\caminho\\arquivo", 
+# Dados clínicos
+dados <- read.table("C:\\Users\\cicer\\Downloads\\nationwidechildrens.org_clinical_patient_ucs.txt", 
                     header = TRUE, sep = "\t")
 
-#arquivos MAF- testando em baixa escala, inicialmente
-maf_UCS <- read.maf(maf = "\\inserir\\caminho\\arquivo")
-maf_UCEC <- read.maf(maf = "\\inserir\\caminho\\arquivo")
+# Arquivos MAF
+maf_UCS <- read.maf(maf = "C:\\Users\\cicer\\Downloads\\a3a40aae-6b8e-4bf5-9fe1-4055f207a38a.wxs.aliquot_ensemble_masked.maf")
+maf_UCEC <- read.maf(maf = "C:\\Users\\cicer\\Downloads\\d7433af4-2fd5-4a8e-84af-a1c86a73f4c6.wxs.aliquot_ensemble_masked.maf")
 ```
 
 ```{r setup, include=FALSE}
 head(dados)
 summary(dados)
 
-#listando os identificadores dos pacientes
+# Listando os identificadores dos pacientes
 list(dados$bcr_patient_uuid)
 ```
 
 ```{r setup, include=FALSE}
-#resumo de genes mutados no UCS
+# Resumo de genes mutados no UCS
 summary_UCS <- getGeneSummary(maf_UCS)
 head(summary_UCS)
 tail(summary_UCS)
 
-#resumo de genes mutados no UCEC
+# Resumo de genes mutados no UCEC
 summary_UCEC <- getGeneSummary(maf_UCEC)
 head(summary_UCEC)
 
-#tabelas adicionais
+# Tabelas adicionais
 summary_UCS
 summary_UCEC
 
-#frequência de amostras mutadas, bom para dados quantitativos
+# Frequência de amostras mutadas
 table(summary_UCEC$MutatedSamples)
 
-#dados clínicos do UCEC, estrtutura para acessar parâmetros dentro de outros parâmetros
+# Dados clínicos do UCEC
 maf_UCEC@clinical.data$Tumor_Sample_Barcode
 ```
 
@@ -64,52 +64,52 @@ maf_UCEC@clinical.data$Tumor_Sample_Barcode
 getSampleSummary(maf_UCS)
 getGeneSummary(maf_UCS)
 getClinicalData(maf_UCS)
-getFields(maf_UCS) #todos os campos disponíveis no MAF
+getFields(maf_UCS) # Todos os campos disponíveis no MAF
 ```
 
 ```{r setup, include=FALSE}
-#fusão de UCS e UCEC
+# Fusão de UCS e UCEC
 comp <- merge_mafs(mafs = c(maf_UCS, maf_UCEC))
 
-#resumo visual das cohortes
+# Resumo visual das cohortes
 plotmafSummary(maf = maf_UCS, rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE)
 plotmafSummary(maf = maf_UCEC, rmOutlier = TRUE, addStat = 'median', dashboard = TRUE, titvRaw = FALSE)
 ```
 
 ```{r setup, include=FALSE}
-#gráficos de barras
+# Gráficos de barras
 mafbarplot(maf_UCS)
 mafbarplot(maf_UCEC)
 
-#oncoplots
+# Oncoplots
 oncoplot(maf_UCS, top = 10)
 oncoplot(maf_UCEC, top = 10)
 
-#lollipop plots
+# Lollipop plots
 lollipopPlot(maf_UCS, gene = 'TP53', AACol = 'HGVSp_Short', showMutationRate = TRUE)
 lollipopPlot(maf_UCEC, gene = 'TP53', AACol = 'HGVSp_Short', showMutationRate = TRUE)
 
-#proteínas
+# Proteínas
 plotProtein('TP53')
 
-#rainfall plot
+# Rainfall plot
 rainfallPlot(maf_UCS)
 ```
 
 ```{r setup, include=FALSE}
-#comparação com TCGA
+# Comparação com TCGA
 tcgaCompare(maf_UCEC)
 
-#frequência de alelos variantes
+# Frequência de alelos variantes
 plotVaf(maf_UCS)
 
-#interações somáticas
+# Interações somáticas
 somaticInteractions(comp, top = 25, pvalue = c(0.05, 0.1))
 
-#sobrevida
+# Sobrevida
 mafSurvival(maf_UCS, gene = 'TP53', time = 'days_to_last_followup', Status = 'Overall_Survival_Status', isTCGA = TRUE)
 
-#comparação de cohorts
+# Comparação de cohorts
 mafCompare(maf_UCEC, maf_UCEC, minMut = 5)
 forestPlot(comp, pVal = 0.1)
 ```
